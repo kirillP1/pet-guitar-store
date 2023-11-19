@@ -1,13 +1,43 @@
 import catchAsyncErrors from '../middleware/catchAsyncErrors.js'
 import Product from '../models/productModel.js'
 import ErrorHandler from '../utils/ErrorHandler.js'
+import ApiFeatures from '../utils/apiFeatures.js'
 
 // Get All Products
-export const getAllProducts = catchAsyncErrors((req, res) => {
-	Product.find()
-		.sort({ createdAt: -1 })
-		.then(products => res.status(200).json(products))
-		.catch(e => next(new ErrorHandler(`${e}`, 500)))
+export const getAllProducts = catchAsyncErrors(async (req, res, next) => {
+	try {
+		const resultPerPage = 5
+
+		// Count of all products in the MongoDB
+		const productCount = await Product.countDocuments()
+
+		// Get filtered products
+		const apiFeatures = new ApiFeatures(Product.find(), req.query)
+			.search()
+			.filter()
+
+		// Copy results of query
+		const apiFeaturesProducts = await apiFeatures.query.clone()
+
+		// Get count of filtered products
+		const filteredProductsCount = apiFeaturesProducts.length
+
+		// Do pagination
+		apiFeatures.pagination(resultPerPage)
+
+		// Get paginated products
+		const paginatedProducts = await apiFeatures.query
+
+		res.status(200).json({
+			success: true,
+			products: paginatedProducts,
+			resultPerPage,
+			productCount,
+			filteredProductsCount,
+		})
+	} catch (e) {
+		next(new ErrorHandler(`${e}`, 404))
+	}
 })
 
 // Get One Product

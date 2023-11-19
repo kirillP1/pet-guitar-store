@@ -5,11 +5,11 @@ import errorMiddleware from './middleware/errorMiddleware.js'
 import indexRouter from './routes/indexRoute.js'
 
 // Handling Uncaught Exception
-process.on('uncaughtException', err => {
-	console.log(`Error: ${err.message}`)
-	console.log(`Shutting down the server due to Uncaught Exception`)
-	process.exit(1)
-})
+// process.on('uncaughtException', err => {
+// 	console.log(`Error: ${err.message}`)
+// 	console.log(`Shutting down the server due to Uncaught Exception`)
+// 	process.exit(1)
+// })
 
 // Connecting ENV constants
 dotenv.config()
@@ -32,11 +32,11 @@ app.listen(process.env.PORT, () => {
 })
 
 // Unhandled Promise Rejection
-process.on('unhandledRejection', err => {
-	console.log(`Error: ${err.message}`)
-	console.log(`Shutting down the server due to Unhandled Promise Rejection`)
+// process.on('unhandledRejection', err => {
+// 	console.log(`Error: ${err.message}`)
+// 	console.log(`Shutting down the server due to Unhandled Promise Rejection`)
 
-	server.close(() => {
-		process.exit(1)
-	})
-})
+// 	server.close(() => {
+// 		process.exit(1)
+// 	})
+// })
