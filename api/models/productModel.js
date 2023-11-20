@@ -23,17 +23,14 @@ const productSchema = mongoose.Schema({
 		{
 			public_id: {
 				type: String,
-				required: true,
 			},
 			url: {
 				type: String,
-				required: true,
 			},
 		},
 	],
 	category: {
 		type: String,
-		required: [true, 'Please Enter Product Category'],
 	},
 	Stock: {
 		type: Number,
@@ -63,6 +60,12 @@ const productSchema = mongoose.Schema({
 		default: Date.now,
 	},
 })
+// Добавьте метод search к схеме
+productSchema.statics.search = function (keyword) {
+	return this.find({
+		name: { $regex: keyword, $options: 'i' },
+	})
+}
 
 const Product = mongoose.model('Product', productSchema)
 

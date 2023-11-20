@@ -1,16 +1,13 @@
-import express, { Router } from 'express'
+import { Router } from 'express'
 import {
 	createProduct,
 	deleteProduct,
 	getAllProducts,
 	getProduct,
 	updateProduct,
-} from '../controllers/productController.js'
+} from '../controllers/productController/productController.js'
 
 const productRouter = new Router()
-
-// Use express.json() middleware to parse JSON request bodies
-productRouter.use(express.json())
 
 // Get All Products
 productRouter.route('/').get(getAllProducts)

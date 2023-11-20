@@ -1,5 +1,3 @@
-import ApiFeaturesHelper from '../helpers/ApiFeaturesHelpers.js'
-
 class ApiFeatures {
 	constructor(query, queryStr) {
 		this.query = query
@@ -24,11 +22,17 @@ class ApiFeatures {
 
 	// Filter query to MongoDB
 	filter() {
+		let queryCopy = { ...this.queryStr }
+
 		//   Removing some fields for category
-		let queryCopy = ApiFeaturesHelper.removeFields(this.queryStr)
+		const removeFields = ['keyword', 'page', 'limit']
+		removeFields.forEach(key => delete queryCopy[key])
 
 		// Filter For Price and Rating
-		queryCopy = ApiFeaturesHelper.filterPriceRating(queryCopy)
+		let queryStr = JSON.stringify(queryCopy)
+		queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, key => `$${key}`)
+
+		queryCopy = JSON.parse(queryStr)
 
 		this.query = this.query.find(queryCopy)
 		return this

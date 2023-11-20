@@ -1,4 +1,7 @@
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 import mongoose from 'mongoose'
+import validator from 'validator'
 
 const userSchema = new mongoose.Schema(
 	{
@@ -44,6 +47,24 @@ const userSchema = new mongoose.Schema(
 	},
 	{ timestamps: true }
 )
+
+// Function before userSchema save
+userSchema.pre('save', async function (next) {
+	// If password was not modified
+	if (!this.isModified('password')) {
+		next()
+	}
+	// If password was modified
+	// Hashing password
+	this.password = await bcrypt.hash(this.password, 10)
+})
+
+// JWT TOKEN
+userSchema.methods.getJWTToken = function () {
+	return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+		expiresIn: '24h',
+	})
+}
 
 const User = mongoose.model('User', userSchema)
 
