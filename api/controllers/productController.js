@@ -1,12 +1,14 @@
-import catchAsyncErrors from '../../middleware/catchAsyncErrors.js'
-import Product from '../../models/productModel.js'
-import ApiFeatures from '../../utils/ApiFeatures/ApiFeatures.js'
-import ErrorHandler from '../../utils/ErrorHandler.js'
+import catchAsyncErrors from '../middleware/catchAsyncErrors.js'
+import Product from '../models/productModel.js'
+import ApiFeatures from '../utils/ApiFeatures/ApiFeatures.js'
+import ErrorHandler from '../utils/ErrorHandler.js'
 
+export const CONST_RESULT_PER_PAGE = 5
 // Get All Products
 export const getAllProducts = catchAsyncErrors(async (req, res, next) => {
 	try {
-		const resultPerPage = 5
+		const startTime = Date.now()
+		const resultPerPage = CONST_RESULT_PER_PAGE
 
 		// Count of all products in the MongoDB
 		const productCount = await Product.countDocuments()
@@ -36,7 +38,7 @@ export const getAllProducts = catchAsyncErrors(async (req, res, next) => {
 			filteredProductsCount,
 		})
 	} catch (e) {
-		next(new ErrorHandler(`${e}`, 404))
+		next(new ErrorHandler(`${e}`, 500))
 	}
 })
 
@@ -56,12 +58,16 @@ export const getProduct = catchAsyncErrors(async (req, res, next) => {
 
 // ADMIN
 // Create Product --ADMIN
-export const createProduct = catchAsyncErrors(async (req, res) => {
-	const product = await Product.create(req.body)
-	res.status(201).json({
-		success: true,
-		product,
-	})
+export const createProduct = catchAsyncErrors(async (req, res, next) => {
+	try {
+		const product = await Product.create(req.body)
+		res.status(201).json({
+			success: true,
+			product,
+		})
+	} catch (e) {
+		next(new ErrorHandler(`${e}`, 400))
+	}
 })
 
 // Update Product --ADMIN

@@ -1,5 +1,5 @@
 import express, { Router } from 'express'
-import productRouter from './productRoute.js'
+import productRouter from './productRoute/productRoute.js'
 import userRouter from './userRoute.js'
 
 const indexRouter = new Router()

@@ -5,9 +5,10 @@
 	"main": "index.js",
 	"type": "module",
 	"scripts": {
-		"dev": "jest && nodemon api/index.js",
+		"dev-test": "jest && nodemon api/index.js",
+		"dev": "nodemon api/index.js",
 		"start": "node api/index.js",
-		"test": "jest",
+		"test": "jest --verbose",
 		"build": "npm install && npm install --prefix client && npm run build --prefix client"
 	},
 	"keywords": [],
@@ -31,6 +32,9 @@
 		"@babel/preset-env": "^7.23.3",
 		"babel-jest": "^29.7.0",
 		"jest": "^29.7.0",
-		"mongodb-memory-server": "^5.1.1"
+		"jest-mock": "^29.7.0",
+		"mongodb-memory-server": "^5.1.1",
+		"sinon": "^17.0.1",
+		"supertest": "^6.3.3"
 	}
 }
