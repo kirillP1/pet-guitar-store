@@ -1,6 +1,7 @@
 import catchAsyncErrors from '../middleware/catchAsyncErrors.js'
 import User from '../models/userModel.js'
 import ErrorHandler from '../utils/errorHandler.js'
+import { sendToken } from '../utils/jwtToken.js'
 
 export const registerUser = catchAsyncErrors(async (req, res, next) => {
 	try {
@@ -43,4 +44,6 @@ export const loginUser = catchAsyncErrors(async (req, res, next) => {
 	if (!user || !isPasswordMatched) {
 		return next(new ErrorHandler('Invalid email or password', 401))
 	}
+
+	sendToken(user, 201, res)
 })
