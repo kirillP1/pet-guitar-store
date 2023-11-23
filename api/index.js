@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
 import express from 'express'
 import connectDatabase from './config/connectDatabase.js'
@@ -19,6 +20,9 @@ connectDatabase()
 
 // Creating an instance of the Express application
 const app = express()
+
+// Connection cookieParser
+app.use(cookieParser())
 
 // Connecting Routes
 app.use('/api', indexRouter)
