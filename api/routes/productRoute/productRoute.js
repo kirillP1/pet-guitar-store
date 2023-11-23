@@ -6,11 +6,12 @@ import {
 	getProduct,
 	updateProduct,
 } from '../../controllers/productController.js'
+import { isAuthenticatedUser } from '../../middleware/auth.js'
 
 const productRouter = new Router()
 
 // Get All Products
-productRouter.route('/').get(getAllProducts)
+productRouter.route('/').get(isAuthenticatedUser, getAllProducts)
 
 // Create New Product
 productRouter.route('/new').post(createProduct)
