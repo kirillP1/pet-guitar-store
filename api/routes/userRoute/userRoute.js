@@ -1,11 +1,11 @@
 import { Router } from 'express'
-import { registerUser } from '../controllers/userController.js'
+import { loginUser, registerUser } from '../../controllers/userController.js'
 
 const userRouter = new Router()
 
 // User enter and exit
 userRouter.route('/register').post(registerUser)
-userRouter.route('/login').post()
+userRouter.route('/login').post(loginUser)
 userRouter.route('/logout').get()
 
 // User account

@@ -27,9 +27,11 @@ app.use('/api', indexRouter)
 app.use(errorMiddleware)
 
 // Starting the server
-app.listen(process.env.PORT, () => {
-	console.log(`Server is running on PORT = ${process.env.PORT}`)
-})
+if (process.env.NODE_ENV !== 'test') {
+	app.listen(process.env.PORT, () => {
+		console.log(`Server is running on PORT = ${process.env.PORT}`)
+	})
+}
 
 // Unhandled Promise Rejection
 // process.on('unhandledRejection', err => {
