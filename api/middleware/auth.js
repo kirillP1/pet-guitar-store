@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import User from '../models/userModel.js'
+import ErrorHandler from '../utils/errorHandler.js'
 import catchAsyncErrors from './catchAsyncErrors.js'
 
 export const isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
@@ -15,3 +16,17 @@ export const isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
 
 	next()
 })
+
+export const authorizeRoles = (...roles) => {
+	return (res, req, next) => {
+		if (!roles.includes(res.user.role)) {
+			return next(
+				new ErrorHandler(
+					`Role: ${res.user.role} is not allowed to access this resouce `,
+					403
+				)
+			)
+		}
+		next()
+	}
+}
