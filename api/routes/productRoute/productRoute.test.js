@@ -19,12 +19,35 @@ describe('Products', () => {
 	})
 
 	describe('/api/product/new', () => {
-		it('should not create product with incorrect data', async () => {
+		it('should not create product because Unauthorized', async () => {
 			const oldCount = await Product.countDocuments()
 
 			await request(app)
 				.post('/api/product/new')
 				.send({ title: '' })
+				.expect(401)
+			const newCount = await Product.countDocuments()
+
+			expect(newCount).toBe(oldCount)
+		})
+
+		it('should not create product with incorrect data', async () => {
+			const oldCount = await Product.countDocuments()
+
+			const response = await request(app).post('/api/user/login').send({
+				email: 'admin@mail.ru',
+				password: '123456789',
+			})
+
+			// Получаем куки из ответа
+			const cookies = response.headers['set-cookie']
+			// Делаем что-то с полученными куками, например, сохраняем их в переменной
+			const token = cookies.find(cookie => cookie.includes('token='))
+
+			await request(app)
+				.post('/api/product/new')
+				.send({ title: '' })
+				.set('Cookie', [token])
 				.expect(400)
 			const newCount = await Product.countDocuments()
 
@@ -32,6 +55,16 @@ describe('Products', () => {
 		})
 
 		it('should create product', async () => {
+			const response = await request(app).post('/api/user/login').send({
+				email: 'admin@mail.ru',
+				password: '123456789',
+			})
+
+			// Получаем куки из ответа
+			const cookies = response.headers['set-cookie']
+			// Делаем что-то с полученными куками, например, сохраняем их в переменной
+			const token = cookies.find(cookie => cookie.includes('token='))
+
 			const fakeProduct = {
 				name: 'TestProduct',
 				description: 'fuck yearrrrrr',
@@ -40,7 +73,11 @@ describe('Products', () => {
 				category: 'Strat',
 			}
 
-			await request(app).post('/api/product/new').send(fakeProduct).expect(201)
+			await request(app)
+				.post('/api/product/new')
+				.set('Cookie', [token])
+				.send(fakeProduct)
+				.expect(201)
 
 			let products = await Product.find({ name: 'TestProduct' })
 			await Product.findByIdAndDelete(products.pop()._id)
@@ -50,7 +87,20 @@ describe('Products', () => {
 	describe('/api/product/:id', () => {
 		describe('get', () => {
 			it('should return 404 for not existing product', async () => {
-				await request(app).get('/api/product/999').expect(404)
+				const response = await request(app).post('/api/user/login').send({
+					email: 'admin@mail.ru',
+					password: '123456789',
+				})
+
+				// Получаем куки из ответа
+				const cookies = response.headers['set-cookie']
+				// Делаем что-то с полученными куками, например, сохраняем их в переменной
+				const token = cookies.find(cookie => cookie.includes('token='))
+
+				await request(app)
+					.get('/api/product/999')
+					.set('Cookie', [token])
+					.expect(404)
 			})
 			it('should find product by id', async () => {
 				const oldCount = await Product.countDocuments()
@@ -64,7 +114,6 @@ describe('Products', () => {
 				const uriProduct = await request(app).get(
 					`/api/product/${product[0]._id.toString()}`
 				)
-
 				expect(uriProduct.body.product._id).toBe(product[0]._id.toString())
 
 				await Product.findByIdAndDelete(product[0]._id)
@@ -75,6 +124,16 @@ describe('Products', () => {
 		})
 		describe('update', () => {
 			it('should update product by id', async () => {
+				const response = await request(app).post('/api/user/login').send({
+					email: 'admin@mail.ru',
+					password: '123456789',
+				})
+
+				// Получаем куки из ответа
+				const cookies = response.headers['set-cookie']
+				// Делаем что-то с полученными куками, например, сохраняем их в переменной
+				const token = cookies.find(cookie => cookie.includes('token='))
+
 				const oldCount = await Product.countDocuments()
 
 				await Product.create({
@@ -85,6 +144,7 @@ describe('Products', () => {
 				const product = await Product.find({ name: 'TestItem' }).limit(1)
 				let uriProduct = await request(app)
 					.put(`/api/product/${product[0]._id.toString()}`)
+					.set('Cookie', [token])
 					.send({
 						name: 'TestItem',
 						description: 'description',
@@ -101,8 +161,19 @@ describe('Products', () => {
 			})
 
 			it('should not update product by incorrect id', async () => {
+				const response = await request(app).post('/api/user/login').send({
+					email: 'admin@mail.ru',
+					password: '123456789',
+				})
+
+				// Получаем куки из ответа
+				const cookies = response.headers['set-cookie']
+				// Делаем что-то с полученными куками, например, сохраняем их в переменной
+				const token = cookies.find(cookie => cookie.includes('token='))
+
 				await request(app)
 					.put(`/api/product/999`)
+					.set('Cookie', [token])
 					.send({
 						name: 'TestItem',
 						description: 'description',

@@ -21,7 +21,7 @@ productRouter
 // Get, Update, Delete One product by ID
 productRouter
 	.route('/:id')
-	.get(isAuthenticatedUser, authorizeRoles('admin'), getProduct)
+	.get(getProduct)
 	.put(isAuthenticatedUser, authorizeRoles('admin'), updateProduct)
 	.delete(deleteProduct)
 

@@ -5,7 +5,7 @@ import catchAsyncErrors from './catchAsyncErrors.js'
 
 export const isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
 	const { token } = req.cookies
-
+	console.log('middleware token', req.cookies)
 	if (!token) {
 		return next(new ErrorHandler('Please Login to access this resource', 401))
 	}
@@ -22,7 +22,7 @@ export const authorizeRoles = (...roles) => {
 		if (!roles.includes(res.user.role)) {
 			return next(
 				new ErrorHandler(
-					`Role: ${res.user.role} is not allowed to access this resouce `,
+					`Role: ${res.user.role} is not allowed to access this resource `,
 					403
 				)
 			)
