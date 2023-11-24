@@ -1,8 +1,10 @@
 import { Router } from 'express'
 import {
+	forgotPassword,
 	loginUser,
 	logoutUser,
 	registerUser,
+	resetPassword,
 } from '../../controllers/userController.js'
 
 const userRouter = new Router()
@@ -17,8 +19,8 @@ userRouter.route('/me').get()
 userRouter.route('/me/update').put()
 
 // Password functions
-userRouter.route('/password/forgot').post()
-userRouter.route('/password/reset/:token').put()
+userRouter.route('/password/forgot').post(forgotPassword)
+userRouter.route('/password/reset/:token').put(resetPassword)
 userRouter.route('/password/update').put()
 
 // Admin users
