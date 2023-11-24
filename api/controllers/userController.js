@@ -77,7 +77,7 @@ export const forgotPassword = catchAsyncErrors(async (req, res, next) => {
 	const resetPasswordUrl = `${req.protocol}://${req.get(
 		'host'
 	)}/api/user/password/reset/${resetToken}`
-	console.log(resetPasswordUrl)
+
 	const message = `Your password reset token is :- \n\n ${resetPasswordUrl} \n\nIf you have not requested this email then, please ignore it.`
 
 	try {
@@ -123,7 +123,7 @@ export const resetPassword = catchAsyncErrors(async (req, res, next) => {
 	}
 
 	if (req.body.password !== req.body.confirmPassword) {
-		return next(new ErrorHandler('Password does not password', 400))
+		return next(new ErrorHandler('Password does not confirmed password', 400))
 	}
 
 	user.password = req.body.password
